@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	color-scheme: light;
+	--retail-ink: #1c2924;
+	--retail-muted: #6d7a73;
+	--retail-green: #11745b;
+	--retail-green-dark: #0d5d49;
+	--retail-coral: #dc765e;
+	--retail-sun: #e8b04d;
+	--retail-paper: #f3f6f3;
+	--retail-line: #e2e8e3;
+}
+
+@layer base {
+	body {
+		background: var(--retail-paper);
+		color: var(--retail-ink);
+		font-family: 'DM Sans', sans-serif;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		font-family: 'Space Grotesk', 'DM Sans', sans-serif;
+	}
+
+	button,
+	a,
+	input,
+	select {
+		-webkit-tap-highlight-color: transparent;
+	}
+}
+
+@layer components {
+	.retail-page {
+		@apply mx-auto w-full max-w-screen-2xl px-4 py-7 sm:px-6 lg:px-8 lg:py-9;
+	}
+
+	.retail-panel {
+		@apply rounded-lg border bg-white;
+		border-color: var(--retail-line);
+		box-shadow: 0 8px 24px rgba(28, 41, 36, 0.045);
+	}
+
+	.retail-eyebrow {
+		color: var(--retail-green);
+		@apply text-xs font-bold uppercase tracking-widest;
+	}
+
+	.retail-title {
+		color: var(--retail-ink);
+		@apply text-3xl font-bold sm:text-4xl;
+	}
+
+	.retail-muted {
+		color: var(--retail-muted);
+	}
+
+	.retail-primary {
+		background: var(--retail-green);
+		@apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-bold text-white transition;
+	}
+
+	.retail-primary:hover {
+		background: var(--retail-green-dark);
+		transform: translateY(-1px);
+	}
+
+	.retail-secondary {
+		@apply inline-flex items-center justify-center gap-2 rounded-md border bg-white px-4 py-2.5 text-sm font-bold transition;
+		border-color: var(--retail-line);
+		color: var(--retail-ink);
+	}
+
+	.retail-secondary:hover {
+		border-color: var(--retail-green);
+		color: var(--retail-green-dark);
+	}
+
+	.retail-field {
+		@apply w-full rounded-md border px-3 py-2.5 text-sm shadow-none outline-none transition;
+		border-color: var(--retail-line);
+		background: #fff;
+	}
+
+	.retail-field:focus {
+		border-color: var(--retail-green);
+		box-shadow: 0 0 0 3px rgba(17, 116, 91, 0.12);
+	}
+}
+
+@keyframes retail-rise-in {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.retail-enter {
+	animation: retail-rise-in 420ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
+	}
+}
