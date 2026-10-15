@@ -44,21 +44,23 @@
         }
         .receipt {
             width: 80mm;
-            min-height: 90mm;
             margin: 0 auto;
             padding: 5mm 4mm;
             background: #fff;
             box-shadow: 0 4px 18px rgba(23, 33, 28, .12);
-            line-height: 1.4;
+            line-height: 1.25;
         }
         .text-center { text-align: center; }
-        .text-right { text-align: right; }
-        .line { border-bottom: 1px dashed #536159; margin: 10px 0; }
-        table { width: 100%; border-collapse: collapse; }
-        td, th { padding: 2px 0; vertical-align: top; }
-        .receipt h1 { margin: 0 0 4px; font-size: 17px; letter-spacing: .04em; }
-        .receipt p { margin: 3px 0; }
-        .total-row td { padding-top: 5px; font-size: 15px; font-weight: 700; }
+        .line { border-bottom: 1px dashed #536159; margin: 7px 0; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        td { padding: 1px 0; vertical-align: top; }
+        .receipt h1 { margin: 0 0 2px; font-size: 17px; letter-spacing: .04em; }
+        .receipt p { margin: 2px 0; }
+        .meta-label { width: 19mm; }
+        .item-name { overflow-wrap: anywhere; }
+        .item-price { padding-left: 2mm; }
+        .total-row td { padding-top: 3px; font-weight: 700; }
+        .footer { margin-top: 8px; }
         .print-actions button:hover { background: #0d5d49; }
         @page {
             size: 80mm 200mm;
@@ -74,12 +76,11 @@
             .print-actions { display: none !important; }
             .receipt {
                 width: 80mm;
-                min-height: 0;
                 margin: 0;
                 padding: 4mm;
                 box-shadow: none;
             }
-            tr, .line, .text-center { break-inside: avoid; }
+            tr, .line, header, footer { break-inside: avoid; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { scroll-behavior: auto !important; }
@@ -92,29 +93,37 @@
         <button type="button" onclick="window.print()">Cetak struk</button>
     </div>
 
+    <script>
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                window.print();
+            }, 500);
+        });
+    </script>
+
     <main class="receipt">
         <header class="text-center">
-            <h1>TOKO RAJUA</h1>
-            <p>Jl. Contoh No. 123 Jember</p>
-            <p>Telp: 0812-xxxx-xxxx</p>
+            <h1>RAIJUA STORE</h1>
+            <p>Jl. Mastrip No. 164, Jember</p>
+            <p>Telp. 0812-3456-7890</p>
         </header>
 
         <div class="line"></div>
 
         <table>
-            <tr><td>No. Nota</td><td class="text-right">{{ $transaction->invoice_number }}</td></tr>
-            <tr><td>Tanggal</td><td class="text-right">{{ $transaction->created_at->format('d/m/Y H:i') }}</td></tr>
-            <tr><td>Kasir</td><td class="text-right">{{ auth()->user()?->name ?? 'Kasir' }}</td></tr>
+            <tr><td class="meta-label">No</td><td>: {{ $transaction->invoice_number }}</td></tr>
+            <tr><td class="meta-label">Kasir</td><td>: {{ auth()->user()?->name ?? 'Kasir' }}</td></tr>
+            <tr><td class="meta-label">Tgl</td><td>: {{ $transaction->created_at->format('d-m-Y H:i') }}</td></tr>
+            <tr><td class="meta-label">Pemb</td><td>: {{ $transaction->payment_method }}</td></tr>
         </table>
 
         <div class="line"></div>
 
         <table>
             @foreach ($transaction->details as $detail)
-                <tr><td colspan="2"><strong>{{ $detail->product->name ?? 'Barang' }}</strong></td></tr>
+                <tr><td colspan="2" class="item-name">{{ $detail->product->name ?? 'Barang' }}</td></tr>
                 <tr>
-                    <td>{{ $detail->quantity }} × {{ number_format($detail->price, 0, ',', '.') }}</td>
-                    <td class="text-right">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                    <td colspan="2" class="item-price">{{ $detail->quantity }} x {{ number_format($detail->price, 0, ',', '.') }} = Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
         </table>
@@ -122,16 +131,16 @@
         <div class="line"></div>
 
         <table>
-            <tr class="total-row"><td>TOTAL</td><td class="text-right">Rp {{ number_format($transaction->total_amount, 0, ',', '.') }}</td></tr>
-            <tr><td>Bayar ({{ $transaction->payment_method }})</td><td class="text-right">Rp {{ number_format($transaction->pay_amount, 0, ',', '.') }}</td></tr>
-            <tr><td>Kembalian</td><td class="text-right">Rp {{ number_format($transaction->change_amount, 0, ',', '.') }}</td></tr>
+            <tr class="total-row"><td>TOTAL</td><td>: Rp {{ number_format($transaction->total_amount, 0, ',', '.') }}</td></tr>
+            <tr><td>BAYAR</td><td>: Rp {{ number_format($transaction->pay_amount, 0, ',', '.') }}</td></tr>
+            <tr><td>KEMBALI</td><td>: Rp {{ number_format($transaction->change_amount, 0, ',', '.') }}</td></tr>
         </table>
 
         <div class="line"></div>
 
-        <footer class="text-center">
-            <p>Terima kasih telah berbelanja.</p>
-            <p>Barang yang sudah dibeli tidak dapat ditukar.</p>
+        <footer class="text-center footer">
+            <p>Terima Kasih Atas Kunjungan Anda</p>
+            <p>Selamat Berbelanja Kembali</p>
         </footer>
     </main>
 </body>
